@@ -27,8 +27,13 @@ export const signin = async(req, res, next)=>{
     const validPassword = bcryptjs.compareSync(password, validUser.password)
     if(!validPassword) return next(errorHandler(401, 'Wrong credentials!'))
     const token = jwt.sign({id: validUser._id}, process.env.JWT_SECRET)
+  // to not show the hashed password in the signin token we destructure the validUser._doc info in password and ...rest, ...rest is the other informations
+    const { password: pass, ...rest} = validUser._doc
   // cookie, httpOnly makes it unusuable bhy 3rd party apps
-  res.cookie('access_token', token, {httpOnly: true, expires: new Date(Date.now() + 24 * 60 * 60 * 1000)}).status(200).json(validUser)
+  res.cookie('access_token', token, {httpOnly: true, expires: new Date(Date.now() + 24 * 60 * 60 * 1000)})
+  .status(200)
+  // here we display in json rest instead of validUser, in this way the password is not shown
+  .json(rest)
   }catch(error){
     next(error)
   }
