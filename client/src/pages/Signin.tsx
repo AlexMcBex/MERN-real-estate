@@ -1,11 +1,21 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-const navigate = useNavigate()
+  // const [error, setError] = useState(null);
+  // const [loading, setLoading] = useState(false); 
+  // new below with redux
+  const {loading, error} = useSelector((state: any) => state.user)
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleChange = (e: { target: { id: any; value: any } }) => {
     setFormData({
@@ -17,7 +27,8 @@ const navigate = useNavigate()
     // prevents page refresh on React
     e.preventDefault();
     try {
-      setLoading(true);
+      // setLoading(true); redux
+      dispatch(signInStart());
       // fetch info from api
       const res = await fetch("/api/auth/signin", {
         // change method to POST
@@ -33,16 +44,19 @@ const navigate = useNavigate()
       console.log(data);
       // check if data has an error
       if (data.success === false) {
-        setLoading(false);
-        setError(data.message);
+        // setLoading(false);
+        // setError(data.message);
+        dispatch(signInFailure(data.message))
         return;
       }
-      setLoading(false);
-      setError(null);
-      navigate('/')
+      // setLoading(false);
+      // setError(null);
+      dispatch(signInSuccess(data))
+      navigate("/");
     } catch (error: any) {
-      setLoading(false);
-      setError(error.message);
+      // setLoading(false);
+      // setError(error.message);
+      dispatch(signInFailure(error.message))
     }
   };
   // console.log(formData);
