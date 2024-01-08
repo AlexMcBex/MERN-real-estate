@@ -1,6 +1,6 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import userReducer from '../redux/user/userSlice.ts'
-import { persistReducer } from 'redux-persist'
+import { persistReducer, persistStore } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
 // REDUX PERSIST 
@@ -21,6 +21,8 @@ export const store = configureStore({
     serializableCheck: false
   }),
 })
+
+export const persistor = persistStore(store)
 // REDUX PERSIST - end
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
