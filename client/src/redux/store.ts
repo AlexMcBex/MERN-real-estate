@@ -3,6 +3,7 @@ import userReducer from '../redux/user/userSlice.ts'
 import { persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
+// REDUX PERSIST 
 const rootReducer = combineReducers({user: userReducer})
 
 const persistConfig = {
@@ -11,14 +12,16 @@ const persistConfig = {
   version: 1
 }
 
-const persistedReducer  = persistReducer
+const persistedReducer  = persistReducer(persistConfig, rootReducer)
 
 export const store = configureStore({
-  reducer: {user: userReducer},
+  reducer: persistedReducer,
+  // {user: userReducer},
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
     serializableCheck: false
   }),
 })
+// REDUX PERSIST - end
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>
