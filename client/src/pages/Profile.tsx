@@ -7,8 +7,8 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
-
-
+import { updateUserStart, updateUserSuccess, updateUserError } from "../redux/user/userSlice"; //redux
+import { useDispatch } from "react-redux";
 
 export default function Profile() {
   const { currentUser } = useSelector(
@@ -24,9 +24,11 @@ export default function Profile() {
   const [formError, setFormError] = useState<boolean>(false);
   // we store the file for the image profile in a const using useref()
   // we specify with this syntax that formData contains a avatar string optional property
-  const [formData, setFormData] = useState<{avatar? : string}>({});
+  const [formData, setFormData] = useState<{ avatar?: string }>({});
 
-  // console.log(formData)
+  const dispatch = useDispatch()
+
+  // console.log(formData);
   // console.log(filePerc)
   // console.log(uploadError)
 
@@ -48,20 +50,23 @@ export default function Profile() {
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
-    uploadTask.on("state_changed", (snapshot) => {
-      // progress displays the % progress of upload
-      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      // console.log('Upload is ' + progress + '% done')
-      setFilePerc(Math.round(progress));
-    },
-    (error: any) => {
-      setUploadError(true);
-    },
-    () => {
-      getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-        setFormData({ ...formData, avatar: downloadURL });
-      });
-    }
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        // progress displays the % progress of upload
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        // console.log('Upload is ' + progress + '% done')
+        setFilePerc(Math.round(progress));
+      },
+      (error: any) => {
+        setUploadError(true);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setFormData({ ...formData, avatar: downloadURL });
+        });
+      }
     );
   };
 
@@ -70,10 +75,40 @@ export default function Profile() {
       handleFileUpload(file);
     }
   }, [file]);
+
+  const handleChange = (e: any) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+
+  const handleSubmit = async (e:any) =>{
+    e.preventDefault()
+    try{
+      dispatch(updateUserStart())
+      const res = await fetch(`api/user/update/${currentUser._id}`,{
+        method: 'POST',
+        headers:{
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json()
+      if (data.success === false){
+        dispatch(updateUserError(data.message))
+        return
+      }
+      dispatch(updateUserSuccess(data))
+    }catch(error:any){
+      dispatch(updateUserError(error.message))
+    }
+  }
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
-      <form className="flex flex-col gap-4">
+      <form 
+      className="flex flex-col gap-4"
+      onSubmit={handleSubmit}
+      >
         {/* we reference to file Ref with ref to upload images */}
         <input
           onChange={(e) => {
@@ -97,34 +132,35 @@ export default function Profile() {
         />
         {/* Display upload percentage */}
         <p className="text-small self-center">
-           { uploadError ? (
-           <span className="text-red-700">Error! (image must be less than 2 mb)</span>
-           )  : filePerc > 0 && filePerc < 100 ? (
-            <span className="text-slate-700">
-              {`Uploading ${filePerc}%`}
+          {uploadError ? (
+            <span className="text-red-700">
+              Error! (image must be less than 2 mb)
             </span>
-            ) : filePerc === 100 ? (
+          ) : filePerc > 0 && filePerc < 100 ? (
+            <span className="text-slate-700">{`Uploading ${filePerc}%`}</span>
+          ) : filePerc === 100 ? (
             <span className="text-green-700">Image uploaded sucessfully</span>
-            ) : (
-              ''
-            )
-          }
-          
+          ) : (
+            ""
+          )}
         </p>
         <input
           type="text"
-          placeholder="username"
-          className="border p-3 rounded-lg"
+          defaultValue={currentUser.username}
+          className="border p-3 rounded-lg "
+          onChange={handleChange}
           id="username"
         />
         <input
           type="text"
           placeholder="email"
           className="border p-3 rounded-lg"
+          onChange={handleChange}
           id="email"
+          defaultValue={currentUser.email}
         />
         <input
-          type="text"
+          type="password"
           placeholder="password"
           className="border p-3 rounded-lg"
           id="password"
