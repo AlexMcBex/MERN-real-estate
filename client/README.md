@@ -1,30 +1,57 @@
-# React + TypeScript + Vite
+# MERN - Truest Estate
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+*Truest Estate* is a sophisticated real estate application built on the MERN stack, featuring a modern and intuitive user interface. Designed to streamline the process of listing properties for rent or sale, it offers seamless account creation and secure login through Google OAuth. Users can showcase their properties with detailed descriptions and high-resolution images, providing a captivating experience for potential renters or buyers.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Technologies Used
 
-## Expanding the ESLint configuration
+- React.js
+- MongoDB
+- Express
+- Node.js
+- Firebase
+- OAuth
+- Postman
+- Vite
+- Bcrypt.js
+- TypeScript
+- Redux
+- Google OAuth
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Objectives
 
-- Configure the top-level `parserOptions` property like this:
+- [x] Implement basic back-end functionality
+- [x] Develop basic client interface
+- [x] Enable users to sign up, sign in, and sign out
+- [x] Integrate *Google OAuth* for secure authentication
+- [x] Design and implement complete user profile page UI
+- [x] Enable users to upload images for their profiles
+- [x] Allow users to update and delete their accounts
+- [ ] Implement functionality for users to create property listings
+- [ ] Enable image uploads for property listings
+- [ ] Allow users to update existing property listings
+- [ ] Implement functionality for users to delete property listings
+- [ ] Add "Contact Landlord" feature
+- [ ] Integrate "Search Listings" functionality
+- [ ] Finalize UI enhancements
+- [ ] Conduct thorough testing
+- [ ] Deploy the application
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+## Routes Table
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+### Auth
+
+| **URL**           | **HTTP Verb** | **Action** |
+| ----------------- | ------------- | ---------- |
+| /api/auth/sign-up | POST          | create     |
+| /api/auth/sign-in | POST          | create     |
+| /api/auth/google  | POST          | create     |
+| /api/auth/signout | DELETE        | destroy    |
+
+### User
+
+| **URL**              | **HTTP Verb** | **Action** |
+| -------------------- | ------------- | ---------- |
+| /api/user/update/:id | POST          | create     |
+| /api/user/delete/:id | DELETE        | destroy    |
