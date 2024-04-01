@@ -42,7 +42,7 @@ export default function SignIn() {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-      console.log(data);
+      // console.log(data);
       // check if data has an error
       if (data.success === false) {
         // setLoading(false);
@@ -74,7 +74,7 @@ export default function SignIn() {
           onChange={handleChange}
         />
         <input
-          type="text"
+          type="password"
           placeholder="password"
           className="border p-3 rounded-lg "
           id="password"
