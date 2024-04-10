@@ -14,30 +14,37 @@ export default function CreateListing() {
   const [formData, setFormData] = useState({
     imageUrls: [],
   });
+  const [uploading, setUploading] = useState(false);
 
   const [imageUploadError, setImageUploadError] = useState<any>(null);
   console.log(formData);
 
   const handleImagesSubmit = async (e: any) => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
-      const promises = [];
+      setUploading(true)
+      setImageUploadError(false)
+      const promises = []
 
       for (let i = 0; i < files.length; i++) {
         promises.push(storeImage(files[i]));
       }
       Promise.all(promises)
         .then((urls: any) => {
+        
           setFormData({
             ...formData,
             imageUrls: formData.imageUrls.concat(urls),
           });
           setImageUploadError(false);
+          setUploading(false)
         })
         .catch(() => {
-          setImageUploadError("Image upload failed (Max 2mb per image)");
+          setImageUploadError("Image upload failed (Max 2mb per image)")
+          setUploading(false)
         });
     } else {
-      setImageUploadError("You can only upload up to 6 images per listing");
+      setImageUploadError("You can only upload up to 6 images per listing")
+      setUploading(false)
     }
   };
   const storeImage = async (image: any) => {
@@ -71,7 +78,6 @@ export default function CreateListing() {
       imageUrls: formData.imageUrls.filter((_, i) => i !== index),
     });
   };
-  
 
   return (
     <main className="p-3 max-w-4xl  mx-auto">
@@ -196,13 +202,14 @@ export default function CreateListing() {
               accept="image/*"
               multiple
               className="p-3 border border-gray-400 rounded w-full"
-            />
+              />
             <button
+              disabled={uploading}
               onClick={handleImagesSubmit}
               className="p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80"
               type="button"
             >
-              Upload
+              { uploading ? "Uploading..." : "Upload"}
             </button>
           </div>
           <p className="text-red-700 text-sm">
