@@ -28,8 +28,8 @@
 - [x] Design and implement complete user profile page UI
 - [x] Enable users to upload images for their profiles
 - [x] Allow users to update and delete their accounts
-- [ ] Implement functionality for users to create property listings
-- [ ] Enable image uploads for property listings
+- [x] Implement functionality for users to create property listings
+- [x] Enable image uploads for property listings
 - [ ] Allow users to update existing property listings
 - [ ] Implement functionality for users to delete property listings
 - [ ] Add "Contact Landlord" feature
