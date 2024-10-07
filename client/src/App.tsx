@@ -12,6 +12,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Header />
+      <main className="m-3">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/sign-in" element={<Signin />} />
@@ -22,6 +23,8 @@ export default function App() {
           <Route path="/create-listing" element={<CreateListing />} />
         </Route>
       </Routes>
+
+      </main>
     </BrowserRouter>
   );
 }
