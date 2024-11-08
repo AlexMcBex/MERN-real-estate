@@ -20,6 +20,23 @@ import {
 } from "../redux/user/userSlice"; //redux
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { FaDraft2Digital } from "react-icons/fa";
+
+interface Listing {
+  name: string;
+  description: string;
+  address: string;
+  regularPrice: number;
+  discountPrice: number;
+  bathrooms: number;
+  bedrooms: number;
+  furnished: boolean;
+  parking: boolean;
+  type: string;
+  offer: boolean;
+  imageUrls: string[];
+  _id: string;
+}
 
 export default function Profile() {
   const { currentUser, loading, error } = useSelector(
@@ -40,6 +57,9 @@ export default function Profile() {
 
   const [updateSuccess, setUpdateSuccess] = useState(false);
 
+  const [showListingsError, setShowListingsError] = useState(false);
+
+  const [userListings, setUserListings] = useState([]);
   const dispatch = useDispatch();
 
   // console.log(formData);
@@ -73,7 +93,7 @@ export default function Profile() {
         // console.log('Upload is ' + progress + '% done')
         setFilePerc(Math.round(progress));
       },
-      (error: any) => {
+      () => {
         setUploadError(true);
       },
       () => {
@@ -133,20 +153,35 @@ export default function Profile() {
     }
   };
 
-  const handleSignOut = async ()=>{
-    try{
-      dispatch(signOutUserStart())
-      const res = await fetch(`api/auth/signout`)
-      const data = await res.json()
-      if (data.success === false){
-        dispatch(signOutUserError(data.message))
-        return
+  const handleSignOut = async () => {
+    try {
+      dispatch(signOutUserStart());
+      const res = await fetch(`api/auth/signout`);
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(signOutUserError(data.message));
+        return;
       }
-      dispatch(signOutUserSuccess())
-    }catch (err){
-      dispatch(signOutUserError(err))
+      dispatch(signOutUserSuccess());
+    } catch (err) {
+      dispatch(signOutUserError(err));
     }
-  }
+  };
+
+  const showListings = async () => {
+    try {
+      const res = await fetch(`api/user/listings/${currentUser._id}`);
+      const data = await res.json();
+      if (data.success === false) {
+        setShowListingsError(true);
+        return;
+      }
+      console.log(data);
+      setUserListings(data);
+    } catch (err) {
+      setShowListingsError(true);
+    }
+  };
 
   return (
     <div className="p-3 max-w-lg mx-auto">
@@ -214,8 +249,10 @@ export default function Profile() {
         >
           {loading ? "Loading..." : "Update"}
         </button>
-        <Link to={"/create-listing"}
-        className="bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-95">
+        <Link
+          to={"/create-listing"}
+          className="bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-95"
+        >
           Create Listing
         </Link>
       </form>
@@ -226,13 +263,49 @@ export default function Profile() {
         >
           Delete account
         </span>
-        <span onClick={handleSignOut} className="text-red-700 cursor-pointer">Sign out</span>
+        <span onClick={handleSignOut} className="text-red-700 cursor-pointer">
+          Sign out
+        </span>
       </div>
       {/* the error here is defined in user.controller.js */}
       <p className="text-red-500 mt-5">{error ? error : ""}</p>
       <p className="text-green-700 mt-5">
         {updateSuccess ? "User updated successfully" : ""}
       </p>
+
+      <button className="text-green-700" onClick={showListings}>
+        Show Listings
+      </button>
+      <p className="text-red-700">{showListingsError && "An error occoured"}</p>
+        {userListings &&
+          userListings.length > 0 &&
+          <div className="flex flex-col gap-4">
+            <h1 className="text-center mt-7 text-xl font-semibold">Your Listings</h1>
+          {userListings.map((listing: Listing) => (
+            <div
+              key={listing._id}
+              className="flex border rounded-lg p-3 justify-between items-center my-2 gap-4"
+            >
+              <Link to={`/listing/${listing._id}`}>
+                <img
+                  src={listing.imageUrls[0]}
+                  alt="Listing Cover"
+                  className="h-16 w-16 object-contain rounded-lg"
+                />
+              </Link>
+              <Link
+                className="text-slate-700 font-semibold flex-1 hover:underline truncate"
+                to={`/listing/${listing._id}`}
+              >
+                <p>{listing.name}</p>
+              </Link>
+              <div className="flex flex-col items-center">
+                <button className="text-red-700 uppercase">Delete</button>
+                <button className="text-green-700 uppercase">Edit</button>
+              </div>
+            </div>
+          ))}
+      </div>}
     </div>
   );
 }
