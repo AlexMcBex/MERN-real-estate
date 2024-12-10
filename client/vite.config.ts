@@ -12,4 +12,10 @@ export default defineConfig({
     }
   },
   plugins: [react()],
+  resolve: {
+    alias: {
+      react: 'react',
+      'react-dom': 'react-dom'
+    }
+  }
 })
