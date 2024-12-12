@@ -1,6 +1,6 @@
-import React from "react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import Contact from "../components/Contact";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
 SwiperCore.use([Navigation]);
@@ -10,13 +10,14 @@ import {
   FaBath,
   FaBed,
   FaChair,
-  FaMapMarkedAlt,
   FaMapMarkerAlt,
   FaParking,
   FaShare,
 } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 interface Listing {
+  userRef: string;
   name: string;
   description: string;
   address: string;
@@ -31,14 +32,19 @@ interface Listing {
   imageUrls: string[];
   _id: string;
 }
+
 export default function Listing() {
   SwiperCore.use([Navigation]);
   const [listing, setListing] = useState<Listing | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [contact, setContact] = useState(false);
 
   const params = useParams();
+  const { currentUser = null } = useSelector((state: any) => state.user || {});
+
+
   useEffect(() => {
     const fetchListing = async () => {
       try {
@@ -60,6 +66,8 @@ export default function Listing() {
     };
     fetchListing();
   }, [params.id]);
+  
+
   return (
     <div>
       {loading && <p className="text-center my-7 text-2xl">Loading...</p>}
@@ -147,10 +155,16 @@ export default function Listing() {
                 {listing.furnished ? "Furnished" : "Not furnished"}
               </li>
             </ul>
+            {currentUser && listing.userRef !== currentUser._id && !contact &&
+            <button 
+            onClick={()=> setContact(true)}
+            className="bg-slate-700 text-white rounded-lg uppercase hover hover:opacity-95 p-3">Contact Landlord</button>
+            }
+            {contact && <Contact listing={listing}/>}
           </div>
         </>
       )}
       {/* {listing && <p>{JSON.stringify(listing)}</p>} */}
     </div>
   );
-}
+} 
