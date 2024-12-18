@@ -20,7 +20,6 @@ import {
 } from "../redux/user/userSlice"; //redux
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { FaDraft2Digital } from "react-icons/fa";
 
 interface Listing {
   name: string;
@@ -176,7 +175,7 @@ export default function Profile() {
         setShowListingsError(true);
         return;
       }
-      console.log(data);
+      // console.log(data);
       setUserListings(data);
     } catch (err) {
       setShowListingsError(true);
