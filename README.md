@@ -18,6 +18,7 @@
 - TypeScript
 - Redux
 - Google OAuth
+- Render
 
 ## Objectives
 
@@ -30,13 +31,13 @@
 - [x] Allow users to update and delete their accounts
 - [x] Implement functionality for users to create property listings
 - [x] Enable image uploads for property listings
-- [ ] Allow users to update existing property listings
-- [ ] Implement functionality for users to delete property listings
-- [ ] Add "Contact Landlord" feature
-- [ ] Integrate "Search Listings" functionality
-- [ ] Finalize UI enhancements
-- [ ] Conduct thorough testing
-- [ ] Deploy the application
+- [x] Allow users to update existing property listings
+- [x] Implement functionality for users to delete property listings
+- [x] Add "Contact Landlord" feature
+- [x] Integrate "Search Listings" functionality
+- [x] Finalize UI enhancements
+- [x] Conduct thorough testing
+- [x] Deploy the application
 
 ## Routes Table
 
@@ -48,10 +49,21 @@
 | /api/auth/sign-in | POST          | create     |
 | /api/auth/google  | POST          | create     |
 | /api/auth/signout | DELETE        | destroy    |
-
 ### User
 
 | **URL**              | **HTTP Verb** | **Action** |
 | -------------------- | ------------- | ---------- |
-| /api/user/update/:id | POST          | create     |
-| /api/user/delete/:id | DELETE        | destroy    |
+| /api/user/update/:id | POST          | update     |
+| /api/user/delete/:id | DELETE        | destroy     |
+| /api/user/listings/:id | GET           | index |
+| /api/user/:id       | GET           | show     |
+
+### Listing
+
+| **URL**              | **HTTP Verb** | **Action** |
+| -------------------- | ------------- | ---------- |
+| /api/listing/create  | POST          | create     |
+| /api/listing/delete/:id | DELETE        | destroy    |
+| /api/listing/update/:id | POST          | update     |
+| /api/listing/get/:id | GET          | show       |
+| /api/listing/get     | GET          | index      |
