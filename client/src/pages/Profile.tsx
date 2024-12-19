@@ -49,12 +49,12 @@ export default function Profile() {
   // image upload error
   const [uploadError, setUploadError] = useState<boolean>(false);
 
-  const [formError, setFormError] = useState<boolean>(false);
+  // const [formError, setFormError] = useState<boolean>(false);
   // we store the file for the image profile in a const using useref()
   // we specify with this syntax that formData contains a avatar string optional property
   const [formData, setFormData] = useState<{ avatar?: string }>({});
 
-  const [updateSuccess, setUpdateSuccess] = useState(false);
+  // const [updateSuccess, setUpdateSuccess] = useState(false);
 
   const [showListingsError, setShowListingsError] = useState(false);
 
@@ -286,7 +286,7 @@ export default function Profile() {
       {/* the error here is defined in user.controller.js */}
       <p className="text-red-500 mt-5">{error ? error : ""}</p>
       <p className="text-green-700 mt-5">
-        {updateSuccess ? "User updated successfully" : ""}
+        {/* {updateSuccess ? "User updated successfully" : ""} */}
       </p>
 
       <button className="text-green-700" onClick={showListings}>

@@ -16,7 +16,7 @@ export default function CreateListing() {
   // console.log(files);
 
   const [error, setError] = useState<any>(null);
-  const [success, setSuccess] = useState(null);
+  // const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
